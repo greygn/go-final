@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: auth_db,forum_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: postgresql://postgres:postgres@postgres:5432/auth_db?sslmode=disable
+      JWT_SECRET: your-secret-key
+      ACCESS_TOKEN_TTL: 15m
+      REFRESH_TOKEN_TTL: 168h
+      GRPC_PORT: 50051
+    depends_on:
+      - postgres
+    ports:
+      - "50051:50051"
+      - "8080:8080"
+
+  forum-service:
+    build:
+      context: ./forum-service
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: postgresql://postgres:postgres@postgres:5432/forum_db?sslmode=disable
+      AUTH_SERVICE_ADDR: auth-service:50051
+      HTTP_PORT: 8081
+      MESSAGE_TTL: 20s
+    depends_on:
+      - postgres
+      - auth-service
+    ports:
+      - "50052:50052"
+      - "8081:8081"
+
+volumes:
+  postgres_data: 

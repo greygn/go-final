@@ -1,0 +1,7 @@
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+); 
