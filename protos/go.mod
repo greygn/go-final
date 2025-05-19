@@ -1,4 +1,4 @@
-module github.com/greygn/go-final/protos
+module github.com/greygn/protos
 
 go 1.24.3
 

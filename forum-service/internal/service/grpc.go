@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/greygn/forum-service/protos/gen/go/proto/forum"
+	"github.com/greygn/protos/proto/forum"
 
 	"github.com/google/uuid"
 )
