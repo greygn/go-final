@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS messages (
     user_id VARCHAR(36) NOT NULL,
     username VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL
 ); 

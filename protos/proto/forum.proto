@@ -4,11 +4,27 @@ package forum;
 option go_package = "github.com/greygn/protos/forum";
 
 service ForumService {
+  // Chat operations
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
   rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
   rpc StreamMessages(StreamMessagesRequest) returns (stream Message);
+
+  // Post operations
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
+  rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
+  rpc GetPost(GetPostRequest) returns (GetPostResponse);
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse);
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+
+  // Comment operations
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
+  rpc GetComments(GetCommentsRequest) returns (GetCommentsResponse);
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse);
+  rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse);
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse);
 }
 
+// Chat messages
 message Message {
   string id = 1;
   string user_id = 2;
@@ -19,7 +35,8 @@ message Message {
 
 message SendMessageRequest {
   string user_id = 1;
-  string content = 2;
+  string username = 2;
+  string content = 3;
 }
 
 message SendMessageResponse {
@@ -39,4 +56,130 @@ message GetMessagesResponse {
 
 message StreamMessagesRequest {
   string user_id = 1;
+}
+
+// Posts
+message Post {
+  string id = 1;
+  string user_id = 2;
+  string username = 3;
+  string title = 4;
+  string content = 5;
+  int64 created_at = 6;
+}
+
+message CreatePostRequest {
+  string user_id = 1;
+  string username = 2;
+  string title = 3;
+  string content = 4;
+}
+
+message CreatePostResponse {
+  bool success = 1;
+  string error = 2;
+  Post post = 3;
+}
+
+message GetPostsRequest {
+  int32 limit = 1;
+  int64 before_timestamp = 2;
+}
+
+message GetPostsResponse {
+  repeated Post posts = 1;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message GetPostResponse {
+  bool success = 1;
+  string error = 2;
+  Post post = 3;
+}
+
+message UpdatePostRequest {
+  string id = 1;
+  string user_id = 2;
+  string title = 3;
+  string content = 4;
+}
+
+message UpdatePostResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+message DeletePostRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message DeletePostResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+// Comments
+message Comment {
+  string id = 1;
+  string post_id = 2;
+  string user_id = 3;
+  string username = 4;
+  string content = 5;
+  int64 created_at = 6;
+}
+
+message CreateCommentRequest {
+  string post_id = 1;
+  string user_id = 2;
+  string username = 3;
+  string content = 4;
+}
+
+message CreateCommentResponse {
+  bool success = 1;
+  string error = 2;
+  Comment comment = 3;
+}
+
+message GetCommentsRequest {
+  string post_id = 1;
+}
+
+message GetCommentsResponse {
+  repeated Comment comments = 1;
+}
+
+message GetCommentRequest {
+  string id = 1;
+}
+
+message GetCommentResponse {
+  bool success = 1;
+  string error = 2;
+  Comment comment = 3;
+}
+
+message UpdateCommentRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message UpdateCommentResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+message DeleteCommentRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message DeleteCommentResponse {
+  bool success = 1;
+  string error = 2;
 } 
