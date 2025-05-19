@@ -4,19 +4,24 @@ import (
 	"context"
 	"time"
 
+	"github.com/greygn/forum-service/internal/repository"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/greygn/protos/proto/forum"
+
 	"github.com/google/uuid"
 	"github.com/greygn/forum-service/internal/repository"
-	"github.com/greygn/protos/forum"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type GRPCService struct {
 	forum.UnimplementedForumServiceServer
-	postService *postservice.Service
+	postService PostService
 }
 
-func NewGRPCService(postService *postservice.Service) *GRPCService {
+func NewGRPCService(postService PostService) *GRPCService {
 	return &GRPCService{
 		postService: postService,
 	}
@@ -34,7 +39,7 @@ func (s *GRPCService) CreatePost(ctx context.Context, req *forum.CreatePostReque
 		Username:  req.Username,
 		Title:     req.Title,
 		Content:   req.Content,
-		CreatedAt: time.Now().Unix(),
+		CreatedAt: time.Now(),
 	}
 
 	if err := s.postService.CreatePost(ctx, post); err != nil {
@@ -49,13 +54,13 @@ func (s *GRPCService) CreatePost(ctx context.Context, req *forum.CreatePostReque
 			Username:  post.Username,
 			Title:     post.Title,
 			Content:   post.Content,
-			CreatedAt: post.CreatedAt,
+			CreatedAt: post.CreatedAt.Unix(),
 		},
 	}, nil
 }
 
 func (s *GRPCService) GetPosts(ctx context.Context, req *forum.GetPostsRequest) (*forum.GetPostsResponse, error) {
-	posts, err := s.postService.GetAllPosts(ctx, int(req.Limit), req.BeforeTimestamp)
+	posts, err := s.postService.GetAllPosts(ctx)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -68,7 +73,7 @@ func (s *GRPCService) GetPosts(ctx context.Context, req *forum.GetPostsRequest) 
 			Username:  post.Username,
 			Title:     post.Title,
 			Content:   post.Content,
-			CreatedAt: post.CreatedAt,
+			CreatedAt: post.CreatedAt.Unix(),
 		}
 	}
 
@@ -91,7 +96,7 @@ func (s *GRPCService) GetPost(ctx context.Context, req *forum.GetPostRequest) (*
 			Username:  post.Username,
 			Title:     post.Title,
 			Content:   post.Content,
-			CreatedAt: post.CreatedAt,
+			CreatedAt: post.CreatedAt.Unix(),
 		},
 	}, nil
 }
@@ -139,7 +144,7 @@ func (s *GRPCService) CreateComment(ctx context.Context, req *forum.CreateCommen
 		UserID:    req.UserId,
 		Username:  req.Username,
 		Content:   req.Content,
-		CreatedAt: time.Now().Unix(),
+		CreatedAt: time.Now(),
 	}
 
 	if err := s.postService.CreateComment(ctx, comment); err != nil {
@@ -154,7 +159,7 @@ func (s *GRPCService) CreateComment(ctx context.Context, req *forum.CreateCommen
 			UserId:    comment.UserID,
 			Username:  comment.Username,
 			Content:   comment.Content,
-			CreatedAt: comment.CreatedAt,
+			CreatedAt: comment.CreatedAt.Unix(),
 		},
 	}, nil
 }
@@ -173,7 +178,7 @@ func (s *GRPCService) GetComments(ctx context.Context, req *forum.GetCommentsReq
 			UserId:    comment.UserID,
 			Username:  comment.Username,
 			Content:   comment.Content,
-			CreatedAt: comment.CreatedAt,
+			CreatedAt: comment.CreatedAt.Unix(),
 		}
 	}
 
@@ -196,7 +201,7 @@ func (s *GRPCService) GetComment(ctx context.Context, req *forum.GetCommentReque
 			UserId:    comment.UserID,
 			Username:  comment.Username,
 			Content:   comment.Content,
-			CreatedAt: comment.CreatedAt,
+			CreatedAt: comment.CreatedAt.Unix(),
 		},
 	}, nil
 }

@@ -8,7 +8,10 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.29.1
 	go.uber.org/zap v1.27.0
+	protos v0.0.0
 )
+
+replace protos => ../protos
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
