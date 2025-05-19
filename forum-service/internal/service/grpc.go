@@ -8,12 +8,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/greygn/protos/proto/forum"
+	"github.com/greygn/protos/gen/go/proto/forum"
 
 	"github.com/google/uuid"
-	"github.com/greygn/forum-service/internal/repository"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type GRPCService struct {
