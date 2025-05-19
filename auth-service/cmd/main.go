@@ -4,15 +4,12 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/greygn/auth-service/internal/config"
-	"github.com/greygn/auth-service/internal/handler"
-	"github.com/greygn/auth-service/internal/logger"
-	"github.com/greygn/auth-service/internal/repository"
-	"github.com/greygn/auth-service/internal/service"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "github.com/greygn/auth-service/docs"
+	"auth-service/internal/config"
+	"auth-service/internal/handler"
+	"auth-service/internal/logger"
+	"auth-service/internal/repository"
+	"auth-service/internal/service"
 )
 
 // @title           Auth Service API
@@ -55,9 +52,6 @@ func main() {
 
 	r := gin.Default()
 
-	// Swagger documentation
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	// API routes
 	v1 := r.Group("/api/v1")
 	{
@@ -95,6 +89,28 @@ func main() {
 			// @Failure 400 {object} handler.ErrorResponse
 			// @Router /auth/refresh [post]
 			auth.POST("/refresh", authHandler.RefreshToken)
+
+			// @Summary Logout user
+			// @Description Logout user by invalidating refresh token
+			// @Tags auth
+			// @Accept json
+			// @Produce json
+			// @Param input body handler.RefreshRequest true "Refresh token"
+			// @Success 200 {object} handler.Response
+			// @Failure 400 {object} handler.ErrorResponse
+			// @Router /auth/logout [post]
+			auth.POST("/logout", authHandler.Logout)
+
+			// @Summary Validate token
+			// @Description Validate JWT token and return user information
+			// @Tags auth
+			// @Accept json
+			// @Produce json
+			// @Security BearerAuth
+			// @Success 200 {object} handler.ValidateResponse
+			// @Failure 401 {object} handler.ErrorResponse
+			// @Router /auth/validate [get]
+			auth.GET("/validate", authHandler.ValidateToken)
 		}
 	}
 

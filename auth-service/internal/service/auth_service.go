@@ -7,9 +7,10 @@ import (
 	"errors"
 	"time"
 
+	"auth-service/internal/config"
+	"auth-service/internal/repository"
+
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/greygn/auth-service/internal/config"
-	"github.com/greygn/auth-service/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

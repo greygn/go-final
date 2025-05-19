@@ -1,6 +1,6 @@
-module github.com/greygn/protos
+module protos
 
-go 1.19
+go 1.24.3
 
 require (
 	google.golang.org/grpc v1.58.2

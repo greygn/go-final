@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"auth-service/internal/config"
+	"auth-service/internal/repository"
+
 	"github.com/google/uuid"
-	"github.com/greygn/auth-service/internal/config"
-	"github.com/greygn/auth-service/internal/repository"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"

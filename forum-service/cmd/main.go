@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/greygn/forum-service/internal/config"
+	"github.com/greygn/forum-service/internal/middleware"
 	"github.com/greygn/forum-service/internal/repository"
 	"github.com/greygn/forum-service/internal/service"
 	httpTransport "github.com/greygn/forum-service/internal/transport/http"
@@ -43,10 +44,17 @@ func main() {
 	// Initialize HTTP server
 	httpServer := httpTransport.NewServer(chatService, logger)
 
+	// Initialize auth middleware
+	authMiddleware := middleware.NewAuthMiddleware(cfg, logger)
+
+	// Create mux with auth middleware
+	mux := http.NewServeMux()
+	mux.Handle("/", authMiddleware.Authenticate(httpServer))
+
 	// Start HTTP server
 	go func() {
 		logger.Info("starting HTTP server", zap.String("addr", cfg.HTTPAddr))
-		if err := http.ListenAndServe(cfg.HTTPAddr, httpServer); err != nil {
+		if err := http.ListenAndServe(cfg.HTTPAddr, mux); err != nil {
 			logger.Fatal("failed to serve HTTP", zap.Error(err))
 		}
 	}()

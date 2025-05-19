@@ -10,8 +10,10 @@ package grpc
 import (
 	"context"
 
-	"github.com/greygn/auth-service/internal/service"
-	authv1 "github.com/greygn/protos/auth/v1"
+	"auth-service/internal/service"
+
+	authv1 "protos/auth/v1"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
